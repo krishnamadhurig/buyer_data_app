@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const path = require('path');
+const fs = require('fs');
 
 const pool = require('./config/db');
 const createTables = require('./config/initTables');
@@ -16,7 +18,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.set('trust proxy', Number(process.env.TRUST_PROXY || 0));
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: { 'upgrade-insecure-requests': null },
+    },
+  })
+);
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
@@ -39,6 +47,15 @@ app.get('/api/health', async (req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/buyers', buyerRoutes);
 app.use('/api/admin', adminRoutes);
+
+const clientDist = path.join(__dirname, '../../frontend/dist');
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
 
 app.use(notFound);
 app.use(errorHandler);
