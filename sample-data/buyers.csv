@@ -1,0 +1,7 @@
+Name,Email,Mobile,Address,Total Invoice Amount,Total Amount Paid,Total Amount Due
+Ravi Kumar,ravi@shop.in,9876543210,"12 MG Road, Pune",50000,20000,30000
+Meena Iyer,meena@store.in,9123456780,Chennai,12500.50,12500.50,0
+Bad Email,not-an-email,9876500000,Delhi,1000,500,500
+Short Mobile,short@x.in,12345,Mumbai,1000,0,1000
+Over Paid,over@x.in,9988776655,Kolkata,1000,1500,
+Wrong Due,due@x.in,9811122233,Jaipur,1000,400,100
