@@ -2,7 +2,7 @@
 
 A responsive web app where users register and sign in with JWT authentication, upload buyer data from CSV or Excel files, and view it in a searchable, paginated table.
 
-**Live demo:** _add the hosted link here_
+**Live demo:** https://buyer-data-app-krishna.onrender.com
 
 ## Features
 
@@ -63,8 +63,8 @@ Buyer-data-app/
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/krishnamadhurig/buyer_data_app.git
+cd buyer_data_app
 ```
 
 ### 2. Database setup
@@ -137,6 +137,7 @@ Open `http://localhost:5173`.
 | `CLIENT_ORIGIN` | Exact URL of the frontend, used for CORS | `http://localhost:5173` |
 | `AUTH_RATE_LIMIT` | Maximum login and register requests per IP per 15 minutes | `20` |
 | `TRUST_PROXY` | Number of reverse proxies in front of the API (0 locally) | `0` |
+| `DB_SSL_CA` | CA certificate for a hosted MySQL that requires SSL | |
 
 Generate a secret with:
 
@@ -157,6 +158,8 @@ Restart `npm run dev` after changing the frontend `.env`.
 1. Open `http://localhost:5173`. The sign-in page opens first. Choose **Sign Up** and create an account.
 2. Sign in, then open the **Upload** tab and upload a file. The files in `sample-data/` are ready to try.
 3. Open **View buyers** to search and page through the data.
+
+`sample-data/buyers-valid.csv` has 24 valid rows. `sample-data/buyers.csv` includes invalid rows to show validation.
 
 ### Upload file format
 
@@ -203,6 +206,17 @@ UPDATE users SET role = 'admin' WHERE email = 'admin@example.com';
 - All SQL uses parameterised queries, and search wildcards are escaped.
 - Uploads are validated by extension, size and file signature, and are parsed in memory.
 - helmet headers, rate limiting on login and register, and a request body size limit.
+
+
+## Deployment
+
+The live demo runs as a single Render web service (Node) that serves both the API and the built React app, with a free Aiven MySQL database.
+
+- Build command: `cd frontend && npm install && npm run build && cd ../backend && npm install`
+- Start command: `cd backend && npm start`
+- Set `VITE_API_URL=/api` and the backend variables above, with `COOKIE_SECURE=true`, `TRUST_PROXY=1`, `DB_SSL_CA` set to the Aiven CA certificate, and `CLIENT_ORIGIN` set to the app URL.
+
+The free instance sleeps when idle, so the first request after a pause can take up to a minute.
 
 ## Running the tests
 
